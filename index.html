@@ -7,14 +7,14 @@
 </head>
 <body>
     
-<form action="Upload.php" method="post">
+<form action="upload.php" method="POST" enctype="multipart/form-data">
 
-    <label for="images"> Upload Images</label>
-    <input type="file" multiple>
+    <label for="images">Upload Images</label>
+    <input type="file" multiple id="images" name="uploaded_images[]">
 
     <button type="submit">Send</button>
-
 </form>
+
 
 </body>
 </html>

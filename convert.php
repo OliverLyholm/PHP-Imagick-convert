@@ -1,6 +1,6 @@
 <?php
 
-$images = glob(__DIR__ . '/Assets/*.{jpg,jpeg,png}', GLOB_BRACE);
+$images = glob(__DIR__ . '/assets/*.{jpg,jpeg,png}', GLOB_BRACE);
 
 
 
@@ -56,7 +56,7 @@ foreach($images as $image){
 
     // Export final image to Generated folder
 
-    $output = __DIR__ . "/Generated/{$imageName}_Converted.png";
+    $output = __DIR__ . "/generated/{$imageName}_Converted.png";
 
     $newImage->writeImage($output);
 
