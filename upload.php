@@ -56,16 +56,21 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
         (int) $CenterHeightPosition
     );
 
+    // Compress png image
+    $newImage->setImageCompression(Imagick::COMPRESSION_ZIP);
+    $newImage->setImageCompressionQuality(6);
 
-    
-    // Set file format of final image
-    $newImage->setImageFormat('png');
+    // Temporary png path
+    $pngPath = tempnam(sys_get_temp_dir(), 'image_') . '.png';
 
-    // get image as data in memory
-    $imageData = $newImage->getImagesBlob();
+    $newImage->writeImage($pngPath);
 
-    // Add image data to zip file
-    $zip->addFromString("Image_{$index}.png", $imageData);
+    // Add temporary png path to zip
+    $zip->addFile(
+        $pngPath,
+        "Image_{$index}.png"
+    );
+
 
     // Cleanup for next image
     $centerImage->clear();
