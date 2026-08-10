@@ -7,22 +7,26 @@ $zipPath = tempnam(sys_get_temp_dir(), 'images_') . '.zip';
 // Open zip
 $zip->open($zipPath, ZipArchive::CREATE);
 
+// Foreach loop to process each of the images 
 foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
    
     if($_FILES['uploaded_images']['error'][$index] !== UPLOAD_ERR_OK){
         continue;
     }
 
+    // Variables for image creation
     $newImage = new Imagick();
     $centerImage = new Imagick($tmPath);
     $backgroundImage = new Imagick($tmPath);
 
+    // blank base image
     $newImage->newImage(
         1080,
         1350,
         new ImagickPixel('transparent')
     );
 
+    // Variables for getting height adn width of base image
     $width  = $newImage->getImageWidth();
     $height = $newImage->getImageHeight();
 
@@ -52,14 +56,10 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
         (int) $CenterHeightPosition
     );
 
+
+    
     // Set file format of final image
     $newImage->setImageFormat('png');
-
-    // Export final image to Generated folder
-
-    // $output = __DIR__ . "/generated/Image_{$index}.png";
-
-    // $newImage->writeImage($output);
 
     // get image as data in memory
     $imageData = $newImage->getImagesBlob();
@@ -69,8 +69,13 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
 
     // Cleanup for next image
     $centerImage->clear();
+    $centerImage->destroy();
+
     $backgroundImage->clear();
+    $backgroundImage->destroy();
+
     $newImage->clear();
+    $newImage->destroy();
 }
 
 $zip->close();
