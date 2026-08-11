@@ -22,8 +22,11 @@ if (!file_exists($file)){
 
 header('Content-Type: application/zip');
 header(
-    'Content-Disposition: attachment; filename="images_' . $id .'.zip"'
-);
+    'Content-Disposition: attachment; filename="images_'
+     . $id 
+     .'.zip"'
+
+     );
 header('Content-Length: ' . filesize($file));
 
 // Download the file
@@ -35,6 +38,7 @@ unlink($file);
 $imagesFolder = __DIR__ . "/uploads/$id";
 $images = glob($imagesFolder . '/*');
 
+// Delete images from folder
 foreach ($images as $image){
 
     if (is_file($image)){
@@ -42,6 +46,7 @@ foreach ($images as $image){
     }
 }
 
+// delete images folder
 rmdir($imagesFolder);
 
 

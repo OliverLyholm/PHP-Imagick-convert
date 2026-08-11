@@ -12,6 +12,7 @@ if (!preg_match('/^[a-zA-Z0-9.]+$/', $id)) {
     header("Location: index.html");
 }
 
+// Zip file Directory
 $file = __DIR__ . "/zips/$id.zip";
 
 // check if the file exists
