@@ -75,6 +75,16 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         Download All Images
     </a>
 
+        <a 
+        href="delete.php?id=<?= urlencode($id); ?>"
+        
+        class="download-button"
+    >
+        Delete & return
+    </a>
+
+    
+
 </div>
 
 <!-- Images -->
