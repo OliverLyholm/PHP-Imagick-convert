@@ -36,6 +36,15 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         border-radius: 5px;
     }
 
+        .delete-button {
+        display: inline-block;
+        padding: 12px 20px;
+        background-color: #ff000d;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
     .download-button:hover {
         background-color: #0056b3;
     }
@@ -78,7 +87,7 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         <a 
         href="delete.php?id=<?= urlencode($id); ?>"
         
-        class="download-button"
+        class="delete-button"
     >
         Delete & return
     </a>
