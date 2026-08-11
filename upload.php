@@ -19,22 +19,38 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     $centerImage = new Imagick($tmPath);
     $backgroundImage = new Imagick($tmPath);
 
+    // Use the selected height and width if any are set else use default values
+
+    if (isset($_POST["imageWidth"]) && $_POST["imageWidth"] != 0 && $_POST["imageWidth"] != null){
+        $imageWidth = $_POST["imageWidth"];
+    } else {
+        $imageWidth = 1080;
+    }
+
+    if (isset($_POST["imageHeight"]) && $_POST["imageHeight"] != 0 && $_POST["imageHeight"] != null){
+        $imageHeight = $_POST["imageHeight"];
+    } else {
+        $imageHeight = 1350;
+    }
+
     // blank base image
     $newImage->newImage(
-        1080,
-        1350,
+        (int) $imageWidth,
+        (int) $imageHeight,
         new ImagickPixel('transparent')
     );
 
-    // Variables for getting height adn width of base image
+    // Variables for getting height and width of base image
     $width  = $newImage->getImageWidth();
     $height = $newImage->getImageHeight();
 
-    // Blur background image
-    $backgroundImage->blurImage(0, 10);
+
 
     // Crop background image
     $backgroundImage->cropThumbnailImage($width, $height);
+
+    // Blur background image
+    $backgroundImage->blurImage(0, 10);
 
     // Add background image to final image
     $newImage->compositeImage(

@@ -10,7 +10,13 @@
 <form action="upload.php" method="POST" enctype="multipart/form-data">
 
     <label for="images">Upload Images</label>
+    <br>
     <input type="file" multiple id="images" name="uploaded_images[]">
+    <br>
+    <label for="height">Select height</label> <br>
+    <input type="text" name="imageHeight" id="height"> <br>
+    <label for="width">Select Width</label> <br>
+    <input type="text" name="imageWidth" id="width"> <br>
 
     <button type="submit">Send</button>
 </form>
