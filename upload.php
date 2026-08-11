@@ -7,6 +7,23 @@ $zipPath = tempnam(sys_get_temp_dir(), 'images_') . '.zip';
 // Open zip
 $zip->open($zipPath, ZipArchive::CREATE);
 
+$conversionId = uniqid('', true);
+
+// Directories
+$resultsDir = __DIR__ . '/uploads/' . $conversionId;
+$zipsDir = __DIR__ . '/zips';
+
+// Make sure the directories exist
+if (!is_dir($resultsDir) && !mkdir($resultsDir, 0777, true)) {
+    die('Could not create results directory: ' . $resultsDir);
+}
+
+if (!is_dir($zipsDir) && !mkdir($zipsDir, 0777, true)) {
+    die('Could not create ZIP directory: ' . $zipsDir);
+}
+
+
+
 // Foreach loop to process each of the images 
 foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
    
@@ -77,7 +94,7 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     $newImage->setImageCompressionQuality(6);
 
     // Temporary png path
-    $pngPath = tempnam(sys_get_temp_dir(), 'image_') . '.png';
+    $pngPath = $resultsDir . '/Image_' . $index . '.png';
 
     $newImage->writeImage($pngPath);
 
@@ -99,14 +116,15 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     $newImage->destroy();
 }
 
+// Close ZIP
 $zip->close();
-header('content-Type: application/zip');
-header('Content-Disposition: attachment; filename="converted_images.zip"');
-header('Content-Length: ' . filesize($zipPath));
 
-readfile($zipPath);
+// Save ZIP permanently
+$finalZipPath = $zipsDir . '/' . $conversionId . '.zip';
 
-unlink($zipPath);
+// Move temporary ZIP to permanent location
+if (!rename($zipPath, $finalZipPath)) { die('Could not save ZIP file.'); }
 
-exit;
+// Redirect to results page
+header( 'Location: results.php?id=' . urlencode($conversionId) ); exit;
 
