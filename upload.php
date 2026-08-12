@@ -1,6 +1,12 @@
 <?php
 
+// check if there is any image uploaded
+if (!isset($_FILES['uploaded_images']) OR 
+    
+    $_FILES['uploaded_images']['error'][0] === UPLOAD_ERR_NO_FILE){
 
+    die('No image provided');
+}
 
 
 // check if imageFormat is set
