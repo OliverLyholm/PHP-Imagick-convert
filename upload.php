@@ -61,13 +61,13 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     if (isset($_POST["imageWidth"]) && $_POST["imageWidth"] != 0 && $_POST["imageWidth"] != null){
         $imageWidth = $_POST["imageWidth"];
     } else {
-        $imageWidth = 1080;
+        $imageWidth = $centerImage->getImageWidth() + 250;
     }
 
     if (isset($_POST["imageHeight"]) && $_POST["imageHeight"] != 0 && $_POST["imageHeight"] != null){
         $imageHeight = $_POST["imageHeight"];
     } else {
-        $imageHeight = 1350;
+        $imageHeight = $centerImage->getImageHeight() + 250;
     }
 
     // blank base image

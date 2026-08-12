@@ -110,7 +110,7 @@ if(isset($_GET['imageFormat']) && $_GET['imageFormat'] === "jpeg"){
 <!-- JPEG Quality -->
 <div class="quality-container">
     <strong>JPEG Quality:</strong>
-    <span><?= htmlspecialchars($jpegCompression); ?></span>
+    <span><?= htmlspecialchars($jpegCompression); ?>%</span>
 </div>
 
 <?php } ?>
