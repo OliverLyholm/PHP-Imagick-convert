@@ -19,6 +19,25 @@ if (!file_exists($file)){
     die("Zip File Not Found");
 }
 
+$imagesFolder = __DIR__ . "/uploads/$id";
+$images = glob($imagesFolder . '/*');
+
+if (count($images) === 1){
+    $image = $images[0];
+
+    header('Content-Type: ' . mime_content_type($image));
+    header('Content-Disposition: attachment; filename="' . basename($image) . '"');
+    header('Content-Length: ' . filesize($image));
+
+    readfile($image);
+
+    unlink($image);
+    rmdir($imagesFolder);
+    
+    unlink($file);
+    exit;
+}
+
 
 header('Content-Type: application/zip');
 header(
@@ -35,8 +54,7 @@ readfile($file);
 // cleanup Delete files with id after download
 unlink($file);
 
-$imagesFolder = __DIR__ . "/uploads/$id";
-$images = glob($imagesFolder . '/*');
+
 
 // Delete images from folder
 foreach ($images as $image){

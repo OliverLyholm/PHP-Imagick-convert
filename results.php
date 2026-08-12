@@ -86,7 +86,15 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         
         class="download-button"
     >
-        Download All Images
+        <?php 
+        
+        if(count($images) === 1){
+
+            echo "Download Image";
+
+        } else {
+            echo "Download All Images";
+        } ?>
     </a>
 
         <a 
