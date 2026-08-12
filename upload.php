@@ -9,7 +9,7 @@ if (!isset($_POST['imageFormat'])){
 }
 
 // check if JPEG compression is set
-if(!isset($_POST['compression']) && $_POST['imageFormat'] == "jepg"){
+if( $_POST['imageFormat'] == "jpeg" && !isset($_POST['compression'])){
     die('jpeg compression not set');
 }
 
@@ -113,6 +113,7 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
 
     // check if image format is jpeg and compress
     if($imageFormat == "jpeg"){
+    $newImage->setImageFormat('jpeg');
     $newImage->setImageCompression(Imagick::COMPRESSION_JPEG);
     $newImage->setImageCompressionQuality($jpegCompression);
     }
