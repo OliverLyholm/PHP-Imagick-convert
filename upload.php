@@ -8,8 +8,15 @@ if (!isset($_POST['imageFormat'])){
     die('No image format set');
 }
 
+// check if JPEG compression is set
+if(!isset($_POST['compression']) && $_POST['imageFormat'] == "jepg"){
+    die('jpeg compression not set');
+}
+
+
 // variables sent from form
 $imageFormat = $_POST['imageFormat'];
+$jpegCompression = $_POST['compression'];
 
 
 // Create new zip to add images
@@ -102,22 +109,25 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
         (int) $CenterHeightPosition
     );
 
-    // // Compress png image
-    // $newImage->setImageCompression(Imagick::COMPRESSION_ZIP);
-    // $newImage->setImageCompressionQuality(6);
+
+
+    // check if image format is jpeg and compress
+    if($imageFormat == "jpeg"){
+    $newImage->setImageCompression(Imagick::COMPRESSION_JPEG);
+    $newImage->setImageCompressionQuality($jpegCompression);
+    }
 
 
 
-    // Temporary png path
-    
-    $pngPath = $resultsDir . '/Image_' . $index . '.' . $imageFormat;
+    //Store image untill deleted or downloaded
+    $imagePath = $resultsDir . '/Image_' . $index . '.' . $imageFormat;
 
-    $newImage->writeImage($pngPath);
+    $newImage->writeImage($imagePath);
 
     // Add temporary png path to zip
     $zip->addFile(
-        $pngPath,
-        "Image_{$index}.png"
+        $imagePath,
+        "Image_{$index}.{$imageFormat}"
     );
 
 

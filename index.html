@@ -20,17 +20,30 @@
 
     <label for="format">select image format</label> <br>
     <select name="imageFormat" id="format">
-        <option value="jpg">JPG</option>
+        <option value="jpeg">JPEG</option>
         <option value="png">PNG</option>
         <option value="webp">WebP</option>
         <option value="gif">GIF</option>
     </select>
+    <br>
+    <label for="compression">Choose JPEG Compression</label>
+    <input type="range" id="compression" name="compression" min="0" max="100" value="0">   <span id="qualityValue">0</span>
     <br>
 
 
     <button type="submit">Send</button>
 </form>
 
+
+
+<script>
+  const slider = document.getElementById("compression");
+  const value = document.getElementById("qualityValue");
+
+  slider.addEventListener("input", () => {
+    value.textContent = slider.value;
+  });
+</script>
 
 </body>
 </html>
