@@ -100,8 +100,13 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     $width  = $newImage->getImageWidth();
     $height = $newImage->getImageHeight();
 
-    // set center image size to the selected size
-    $centerImage->cropThumbnailImage($centerImageWidth, $centerImageHeight);
+    // resize center image to the selected size 
+    $centerImage->resizeImage(
+        $centerImageWidth,
+        $centerImageHeight,
+        Imagick::FILTER_LANCZOS,
+        1
+    );
 
     // Crop background image
     $backgroundImage->cropThumbnailImage($width, $height);
