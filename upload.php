@@ -1,5 +1,17 @@
 <?php
 
+
+
+
+// check if imageFormat is set
+if (!isset($_POST['imageFormat'])){
+    die('No image format set');
+}
+
+// variables sent from form
+$imageFormat = $_POST['imageFormat'];
+
+
 // Create new zip to add images
 $zip = new ZipArchive();
 $zipPath = tempnam(sys_get_temp_dir(), 'images_') . '.zip';
@@ -21,6 +33,7 @@ if (!is_dir($resultsDir) && !mkdir($resultsDir, 0777, true)) {
 if (!is_dir($zipsDir) && !mkdir($zipsDir, 0777, true)) {
     die('Could not create ZIP directory: ' . $zipsDir);
 }
+
 
 
 
@@ -89,12 +102,15 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
         (int) $CenterHeightPosition
     );
 
-    // Compress png image
-    $newImage->setImageCompression(Imagick::COMPRESSION_ZIP);
-    $newImage->setImageCompressionQuality(6);
+    // // Compress png image
+    // $newImage->setImageCompression(Imagick::COMPRESSION_ZIP);
+    // $newImage->setImageCompressionQuality(6);
+
+
 
     // Temporary png path
-    $pngPath = $resultsDir . '/Image_' . $index . '.png';
+    
+    $pngPath = $resultsDir . '/Image_' . $index . '.' . $imageFormat;
 
     $newImage->writeImage($pngPath);
 
