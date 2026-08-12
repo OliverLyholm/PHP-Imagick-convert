@@ -153,5 +153,9 @@ $finalZipPath = $zipsDir . '/' . $conversionId . '.zip';
 if (!rename($zipPath, $finalZipPath)) { die('Could not save ZIP file.'); }
 
 // Redirect to results page
-header( 'Location: results.php?id=' . urlencode($conversionId) ); exit;
-
+header(
+    'Location: results.php?id=' . urlencode($conversionId) .
+    '&compression=' . urlencode($jpegCompression) . 
+    '&imageFormat=' . urldecode($imageFormat)
+);
+exit;

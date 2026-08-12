@@ -63,6 +63,11 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         width: 100%;
         display: block;
     }
+
+    .quality-container {
+    margin-bottom: 30px;
+    font-size: 18px;
+}
 </style>
 
 
@@ -92,9 +97,23 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         Delete & return
     </a>
 
-    
-
 </div>
+
+<?php 
+// check if image format is a jpeg and show image quality
+if(isset($_GET['imageFormat']) && $_GET['imageFormat'] === "jpeg"){
+
+    $imageFormat = $_GET['imageFormat'];
+    $jpegCompression = $_GET['compression'];
+
+ ?>
+<!-- JPEG Quality -->
+<div class="quality-container">
+    <strong>JPEG Quality:</strong>
+    <span><?= htmlspecialchars($jpegCompression); ?></span>
+</div>
+
+<?php } ?>
 
 <!-- Images -->
 <div class="images">
