@@ -76,6 +76,19 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
         $imageHeight = $centerImage->getImageHeight() + 250;
     }
 
+    // Use selected Center image height and width else use default of original image
+        if (isset($_POST["centerImageWidth"]) && $_POST["centerImageWidth"] != 0 && $_POST["centerImageWidth"] != null){
+        $centerImageWidth = $_POST["centerImageWidth"];
+    } else {
+        $centerImageWidth = $centerImage->getImageWidth();
+    }
+
+    if (isset($_POST["centerImageHeight"]) && $_POST["centerImageHeight"] != 0 && $_POST["centerImageHeight"] != null){
+        $centerImageHeight = $_POST["centerImageHeight"];
+    } else {
+        $centerImageHeight = $centerImage->getImageHeight();
+    }
+
     // blank base image
     $newImage->newImage(
         (int) $imageWidth,
@@ -87,7 +100,8 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     $width  = $newImage->getImageWidth();
     $height = $newImage->getImageHeight();
 
-
+    // set center image size to the selected size
+    $centerImage->cropThumbnailImage($centerImageWidth, $centerImageHeight);
 
     // Crop background image
     $backgroundImage->cropThumbnailImage($width, $height);
