@@ -147,8 +147,3 @@ $images = glob(__DIR__ . "/uploads/$id/*");
 
 </body>
 </html>
-
-
-
-</body>
-</html>
