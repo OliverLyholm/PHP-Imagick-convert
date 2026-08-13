@@ -16,10 +16,18 @@ if(!isset($_POST['compression'])){
 }
 
 
-// variables sent from form
+// variables from form
 
 // if no format is selected use jpeg as default
 $formats = $_POST['formats'] ?? ['jpeg'];
+
+if(isset($_POST['maxFileSize'])){
+
+    $maxFileSize = $_POST['maxFileSize'] * 1024;
+
+}
+
+var_dump($maxFileSize);
 
 $jpegCompression = $_POST['compression'];
 
@@ -136,44 +144,93 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     // make a version of the image with every selected image format
     foreach ($formats as $imageFormat){
 
+       
+
         if(!isset($imageFormat) OR $imageFormat == null){
             $imageFormat = 'jpeg';
         }
+
+             //Create Image Path
+            $imagePath = $resultsDir . '/Image_' . $index . '.' . $imageFormat;
 
             $outputImage = clone($newImage);
 
             switch($imageFormat){
 
-            // check if image format is jpeg and compress
-            case 'jpeg':
-            $newImage->setImageFormat('jpeg');
-            $newImage->setImageCompression(Imagick::COMPRESSION_JPEG);
-            $newImage->setImageCompressionQuality($jpegCompression);
-            break;
+                // check if image format is jpeg and compress
+                case 'jpeg':
+
+                $outputImage->setImageFormat('jpeg');
+
+                $minQuality = 1;
+                $maxQuality = 100;
+                $bestQuality = $minQuality;
+
+                // Guess 5 times max for end result
+                for ($guess = 1; $guess <= 5; $guess++) {
+
+                    // find midpoint between max and min quality
+                    $quality = (int) floor(($minQuality + $maxQuality) / 2);
+
+                    $outputImage->setImageCompression(Imagick::COMPRESSION_JPEG);
+                    $outputImage->setImageCompressionQuality($quality);
+
+                    $outputImage->writeImage($imagePath);
+
+                    clearstatcache(true, $imagePath);
+
+                    $fileSize = filesize($imagePath);
+
+                    // check if the filesize is bigger than the max file size
+                    if ($fileSize <= $maxFileSize) {
+                        $bestQuality = $quality;
+
+                        // if quality fits check if there is something better
+                        $minQuality = $quality + 1;
+                    } else {
+                       // if quality doesnt fit try lower
+                        $maxQuality = $quality - 1;
+                    }
+
+                    // break if thre is nothing left to earch trough
+                    if ($minQuality > $maxQuality) {
+                        break;
+                    }
+                }
+
+                // write image with best quality
+                $outputImage->setImageCompression(Imagick::COMPRESSION_JPEG);
+                $outputImage->setImageCompressionQuality($bestQuality);
+                $outputImage->writeImage($imagePath);
+
+                break;
             
-            // check if image format is png and set format
-            case 'png':
-            $newImage->setImageFormat('png');
-            break;
+                // check if image format is png and set format
+                case 'png':
+                    $outputImage->setImageFormat('png');
+                    $outputImage->writeImage($imagePath);
+                break;
             
-            // check if image format is webp and compress
-            case 'webp':
-            $newImage->setImageFormat('webp');
-            $newImage->setImageCompressionQuality($jpegCompression);
-            break;
+                // check if image format is webp and compress
+                case 'webp':
+                    $outputImage->setImageFormat('webp');
+                    $outputImage->setImageCompressionQuality($jpegCompression);
+                    $outputImage->writeImage($imagePath);
+                break;
             
-            // check if image format is gif and set format
-            case 'gif':
-            $newImage->setImageFormat('gif');
-            break;
+                // check if image format is gif and set format
+                case 'gif':
+                    $outputImage->setImageFormat('gif');
+
+                    $outputImage->writeImage($imagePath);
+                break;
 
 
 
         }
-    //Store image untill deleted or downloaded
-    $imagePath = $resultsDir . '/Image_' . $index . '.' . $imageFormat;
 
-    $newImage->writeImage($imagePath);
+
+
 
     // Add temporary png path to zip
     $zip->addFile(
@@ -202,6 +259,7 @@ $finalZipPath = $zipsDir . '/' . $conversionId . '.zip';
 
 // Move temporary ZIP to permanent location
 if (!rename($zipPath, $finalZipPath)) { die('Could not save ZIP file.'); }
+
 
 
 // query for all data that gets sent to results.php
