@@ -23,15 +23,38 @@
     <label for="centerWidth">Enter center image Width</label><br>
     <input type="text" name="centerImageWidth" id="centerWidth"><br>
 
-    <label for="format">select image format</label> <br>
+    <!-- <label for="format">select image format</label> <br>
     <select name="imageFormat" id="format">
         <option value="jpeg">JPEG</option>
         <option value="png">PNG</option>
         <option value="webp">WebP</option>
         <option value="gif">GIF</option>
     </select>
-    <br>
-    <label for="compression">Choose JPEG quality</label>
+    <br> -->
+
+    <label>Select image formats</label>
+    <ul>
+        <li>
+            <input type="checkbox" name="formats[]" value="jpeg" id="formatjpeg" checked>
+            <label for="formatjpeg">JPEG</label>
+        </li>
+
+        <li>
+            <input type="checkbox" name="formats[]" value="png" id="formatpng">
+            <label for="formatpng">PNG</label>
+        </li>
+        <li>
+            <input type="checkbox" name="formats[]" value="webp" id="formatwebp">
+            <label for="formatwebp">WebP</label>
+        </li>
+        <li>
+            <input type="checkbox" name="formats[]" value="gif" id="formatgif">
+            <label for="formatgif">GIF</label>
+        </li>
+    </ul>
+    
+
+    <label for="compression">Choose image quality</label>
     <input type="range" id="compression" name="compression" min="1" max="100" value="50">   <span id="qualityValue">50</span>
     <br>
 

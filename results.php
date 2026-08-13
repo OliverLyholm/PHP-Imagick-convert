@@ -7,10 +7,14 @@ die("No ID provided");
 
 }
 
-
+// variables sent from uplods.php
+$selectedFormat = $_GET['imageFormat'];
+$jpegCompression = $_GET['compression'];
 $id = $_GET['id'];
 
 $images = glob(__DIR__ . "/uploads/$id/*");
+
+
 
 ?>
 
@@ -107,21 +111,6 @@ $images = glob(__DIR__ . "/uploads/$id/*");
 
 </div>
 
-<?php 
-// check if image format is a jpeg and show image quality
-if(isset($_GET['imageFormat']) && $_GET['imageFormat'] === "jpeg"){
-
-    $imageFormat = $_GET['imageFormat'];
-    $jpegCompression = $_GET['compression'];
-
- ?>
-<!-- JPEG Quality -->
-<div class="quality-container">
-    <strong>JPEG Quality:</strong>
-    <span><?= htmlspecialchars($jpegCompression); ?>%</span>
-</div>
-
-<?php } ?>
 
 <!-- Images -->
 <div class="images">
@@ -132,9 +121,22 @@ if(isset($_GET['imageFormat']) && $_GET['imageFormat'] === "jpeg"){
 
  $filename = basename($image);
 
+ $imageFormat = pathinfo($filename, PATHINFO_EXTENSION);
+
  ?>
 
     <div class="image-card">
+        <span>Image format: .<?= htmlspecialchars($imageFormat); ?></span>
+        <span> 
+            <?php 
+
+        if($imageFormat === 'png' OR $imageFormat === 'gif'){
+            echo '<br>Image format cannot be compressed';
+        } elseif($imageFormat === 'jpeg' OR $imageFormat === 'webp'){
+            echo "<br>Image Quality = $jpegCompression%";
+        }
+        ?>
+        </span>
         <img src="<?= "uploads/$id/" . htmlspecialchars($filename) ?>" alt="Image">
 
     </div>

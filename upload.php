@@ -9,19 +9,18 @@ if (!isset($_FILES['uploaded_images']) OR
 }
 
 
-// check if imageFormat is set
-if (!isset($_POST['imageFormat'])){
-    die('No image format set');
-}
 
 // check if JPEG compression is set
-if( $_POST['imageFormat'] == "jpeg" && !isset($_POST['compression'])){
+if(!isset($_POST['compression'])){
     die('jpeg compression not set');
 }
 
 
 // variables sent from form
-$imageFormat = $_POST['imageFormat'];
+
+// if no format is selected use jpeg as default
+$formats = $_POST['formats'] ?? ['jpeg'];
+
 $jpegCompression = $_POST['compression'];
 
 
@@ -63,7 +62,6 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     $backgroundImage = new Imagick($tmPath);
 
     // Use the selected height and width if any are set else use default values
-
     if (isset($_POST["imageWidth"]) && $_POST["imageWidth"] != 0 && $_POST["imageWidth"] != null){
         $imageWidth = $_POST["imageWidth"];
     } else {
@@ -135,16 +133,43 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     );
 
 
+    // make a version of the image with every selected image format
+    foreach ($formats as $imageFormat){
 
-    // check if image format is jpeg and compress
-    if($imageFormat == "jpeg"){
-    $newImage->setImageFormat('jpeg');
-    $newImage->setImageCompression(Imagick::COMPRESSION_JPEG);
-    $newImage->setImageCompressionQuality($jpegCompression);
-    }
+        if(!isset($imageFormat) OR $imageFormat == null){
+            $imageFormat = 'jpeg';
+        }
+
+            $outputImage = clone($newImage);
+
+            switch($imageFormat){
+
+            // check if image format is jpeg and compress
+            case 'jpeg':
+            $newImage->setImageFormat('jpeg');
+            $newImage->setImageCompression(Imagick::COMPRESSION_JPEG);
+            $newImage->setImageCompressionQuality($jpegCompression);
+            break;
+            
+            // check if image format is png and set format
+            case 'png':
+            $newImage->setImageFormat('png');
+            break;
+            
+            // check if image format is webp and compress
+            case 'webp':
+            $newImage->setImageFormat('webp');
+            $newImage->setImageCompressionQuality($jpegCompression);
+            break;
+            
+            // check if image format is gif and set format
+            case 'gif':
+            $newImage->setImageFormat('gif');
+            break;
 
 
 
+        }
     //Store image untill deleted or downloaded
     $imagePath = $resultsDir . '/Image_' . $index . '.' . $imageFormat;
 
@@ -156,6 +181,7 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
         "Image_{$index}.{$imageFormat}"
     );
 
+    }
 
     // Cleanup for next image
     $centerImage->clear();
@@ -166,7 +192,7 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
 
     $newImage->clear();
     $newImage->destroy();
-}
+}   
 
 // Close ZIP
 $zip->close();
@@ -177,10 +203,17 @@ $finalZipPath = $zipsDir . '/' . $conversionId . '.zip';
 // Move temporary ZIP to permanent location
 if (!rename($zipPath, $finalZipPath)) { die('Could not save ZIP file.'); }
 
+
+// query for all data that gets sent to results.php
+$dataQuery = http_build_query([
+    'id' => $conversionId,
+    'compression' => $jpegCompression,
+    'imageFormat' => $formats
+]);
+
+
 // Redirect to results page
 header(
-    'Location: results.php?id=' . urlencode($conversionId) .
-    '&compression=' . urlencode($jpegCompression) . 
-    '&imageFormat=' . urldecode($imageFormat)
+    'Location: results.php?' . $dataQuery
 );
 exit;
