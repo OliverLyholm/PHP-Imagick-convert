@@ -12,6 +12,12 @@ $selectedFormat = $_GET['imageFormat'];
 $jpegCompression = $_GET['compression'];
 $id = $_GET['id'];
 
+// check if a quality was automatically set
+if(isset($_GET['autoQuality'])){
+
+$quality = $_GET['autoQuality'];
+}
+
 $images = glob(__DIR__ . "/uploads/$id/*");
 
 
@@ -130,13 +136,29 @@ $images = glob(__DIR__ . "/uploads/$id/*");
         <span> 
             <?php 
 
+        // check what format the image is
         if($imageFormat === 'png' OR $imageFormat === 'gif'){
             echo '<br>Image format cannot be compressed';
-        } elseif($imageFormat === 'jpeg' OR $imageFormat === 'webp'){
+        } elseif($imageFormat === 'webp'){
+
             echo "<br>Image Quality = $jpegCompression%";
+        }elseif($imageFormat === 'jpeg'){
+            if(isset($quality)){
+                echo "<br>Image Quality = $quality%";
+            } else{
+                echo "<br>Image Quality = $jpegCompression%";
+            }
         }
         ?>
-        </span>
+        </span> <br>
+        <span>FileSize: <?php 
+        
+        $imageSize =  round(filesize($image) / 1024);
+
+        echo "$imageSize";
+
+
+        ?> KB</span>
         <img src="<?= "uploads/$id/" . htmlspecialchars($filename) ?>" alt="Image">
 
     </div>

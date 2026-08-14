@@ -21,13 +21,15 @@ if(!isset($_POST['compression'])){
 // if no format is selected use jpeg as default
 $formats = $_POST['formats'] ?? ['jpeg'];
 
-if(isset($_POST['maxFileSize'])){
 
-    $maxFileSize = $_POST['maxFileSize'] * 1024;
+// if max file size is set convert it into its value in bytes
+if(isset($_POST['maxFileSize']) && $_POST['maxFileSize'] != null){
+
+    $maxFileSize = (int) $_POST['maxFileSize'] * 1024;
 
 }
 
-var_dump($maxFileSize);
+
 
 $jpegCompression = $_POST['compression'];
 
@@ -145,7 +147,7 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
     foreach ($formats as $imageFormat){
 
        
-
+        
         if(!isset($imageFormat) OR $imageFormat == null){
             $imageFormat = 'jpeg';
         }
@@ -161,6 +163,8 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
                 case 'jpeg':
 
                 $outputImage->setImageFormat('jpeg');
+                // check if a max file size is set
+                if(isset($maxFileSize)){
 
                 $minQuality = 1;
                 $maxQuality = 100;
@@ -197,6 +201,9 @@ foreach($_FILES['uploaded_images']['tmp_name'] as $index => $tmPath) {
                         break;
                     }
                 }
+                    }else{
+                        $bestQuality = $jpegCompression;
+                    }
 
                 // write image with best quality
                 $outputImage->setImageCompression(Imagick::COMPRESSION_JPEG);
@@ -262,11 +269,14 @@ if (!rename($zipPath, $finalZipPath)) { die('Could not save ZIP file.'); }
 
 
 
+
+
 // query for all data that gets sent to results.php
 $dataQuery = http_build_query([
     'id' => $conversionId,
     'compression' => $jpegCompression,
-    'imageFormat' => $formats
+    'imageFormat' => $formats,
+    'autoQuality' => $quality
 ]);
 
 
